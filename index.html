@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Start.me Page Title Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+      text-align: center;
+    }
+    .title-box {
+      background: #fff;
+      border: 2px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 40px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>Start.me Page Title Viewer</h2>
+  <div class="title-box" id="output">Loading title...</div>
+
+  <script>
+    async function fetchTitle(targetUrl) {
+      try {
+        const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
+        const res = await fetch(proxy);
+        const data = await res.json();
+
+        const match = data.contents.match(/<title>(.*?)<\/title>/i);
+        const title = match ? match[1] : "Title not found";
+
+        document.getElementById('output').textContent = "Page Title: " + title;
+      } catch (e) {
+        document.getElementById('output').textContent = "Error fetching title.";
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("url");
+
+    if (url) {
+      fetchTitle(url);
+    } else {
+      document.getElementById('output').textContent = "No URL provided.";
+    }
+  </script>
+</body>
+</html>
